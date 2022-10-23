@@ -10,7 +10,7 @@ const request = supertest(app);
 
 describe('Test Images endpoint', () => {
     it('gets the  api/images endpoint', async () => {
-        const response = await request.get('/api/images');
+        const response = await request.get('/');
         expect(response.status).toBe(200);
     });
 

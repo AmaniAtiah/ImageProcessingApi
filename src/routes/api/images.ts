@@ -6,7 +6,9 @@ import processImage from '../../utilities';
 
 const images = express.Router();
 
-const image = async(req: Request, res: Response) => {
+const image = (req: Request, res: Response) => {
+
+  
   if(req.query.filename == 'encenadaport' || req.query.filename == 'fjord' || req.query.filename == 'icelandwaterfall' || req.query.filename == 'palmtunnel' || req.query.filename == 'santamonica' ) {
 
     processImage(req, res);
@@ -15,19 +17,15 @@ const image = async(req: Request, res: Response) => {
     return res.send('not found Image ' + req.query.filename)
   }
 }
-const showImages= async(req: Request, res: Response) => {
+const showImages= (req: Request, res: Response) => {
   image(req, res)
 
 }
 
-const showImageWithWidthAndHeight= async(req: Request, res: Response) => {
-  image(req, res)
+const showImageWithWidthAndHeight= (req: Request, res: Response) => {
+ 
 
   
-  if(!req.query.filename) {
-    return res.send('Please put the file name')
-  } 
-
   const width: number = parseInt(req.query.width as string);
   if (Number.isNaN(width) || width < 1) {
     return res.send("please enter  positive number for width")
@@ -37,22 +35,28 @@ const showImageWithWidthAndHeight= async(req: Request, res: Response) => {
   if (Number.isNaN(height) || height < 1) {
     return res.send("please enter positive number for height");
   } 
+  image(req, res)
   
   }
 
-images.get('/', (req, res) => {
+images.get('/', (req: Request, res: Response):void => {
 
   if(req.query.filename) {
     showImages(req, res)
-  } 
+
+  }  else {
+      res.send('Please put the file name')
+
+  }
 
   if(req.query.width || req.query.height) {
     showImageWithWidthAndHeight(req, res)
-  }
+
+  } 
+
+  res.setHeader('X-Foo', 'bar')
 
 })
 
-
 export default images;
-
 

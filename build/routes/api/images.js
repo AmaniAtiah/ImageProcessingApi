@@ -40,14 +40,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var sharp_1 = __importDefault(require("sharp"));
-var path_1 = __importDefault(require("path"));
+var utilities_1 = __importDefault(require("../../utilities"));
 var images = express_1.default.Router();
-var showImageWithoutWidthAndHeight = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var image = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         if (req.query.filename == 'encenadaport' || req.query.filename == 'fjord' || req.query.filename == 'icelandwaterfall' || req.query.filename == 'palmtunnel' || req.query.filename == 'santamonica') {
-            res.sendFile(path_1.default.resolve('./') + "/assets/full/".concat(req.query.filename, ".jpg"));
-            uploadFileWithoutWidthAndHeight(req, res);
+            (0, utilities_1.default)(req, res);
         }
         else {
             return [2 /*return*/, res.send('not found Image ' + req.query.filename)];
@@ -55,74 +53,36 @@ var showImageWithoutWidthAndHeight = function (req, res) { return __awaiter(void
         return [2 /*return*/];
     });
 }); };
-function uploadFileWithoutWidthAndHeight(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, sharp_1.default)(path_1.default.resolve('./') + "/assets/full/".concat(req.query.filename, ".jpg"))
-                        .toFile(path_1.default.resolve('./') + "/assets/thumb/".concat(req.query.filename, ".jpg"), function (err, info) {
-                        console.log(err);
-                    })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-var showImage = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var width, height;
+var showImages = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                width = parseInt(req.query.width);
-                height = parseInt(req.query.height);
-                if (!(req.query.filename == 'encenadaport' || req.query.filename == 'fjord' || req.query.filename == 'icelandwaterfall' || req.query.filename == 'palmtunnel' || req.query.filename == 'santamonica')) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, sharp_1.default)(path_1.default.resolve('./') + "/assets/full/".concat(req.query.filename, ".jpg"))
-                        .rotate()
-                        .resize(width, height)
-                        .jpeg()
-                        .toBuffer()
-                        .then(function (data) {
-                        res.type('jpg').send(data);
-                    })
-                        .catch(function (err) {
-                        console.log(err);
-                    })];
-            case 1:
-                _a.sent();
-                uploadFile(req, res);
-                return [3 /*break*/, 3];
-            case 2: return [2 /*return*/, res.send('not found Image ' + req.query.filename)];
-            case 3: return [2 /*return*/];
-        }
+        image(req, res);
+        return [2 /*return*/];
     });
 }); };
-function uploadFile(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, sharp_1.default)(path_1.default.resolve('./') + "/assets/full/".concat(req.query.filename, ".jpg"))
-                        .resize(parseInt(req.query.width), parseInt(req.query.height))
-                        .toFile(path_1.default.resolve('./') + "/assets/thumb/".concat(req.query.filename, ".jpg") + req.query.width + req.query.height, function (err, info) {
-                        console.log(err);
-                    })];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
+var showImageWithWidthAndHeight = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var width, height;
+    return __generator(this, function (_a) {
+        image(req, res);
+        if (!req.query.filename) {
+            return [2 /*return*/, res.send('Please put the file name')];
+        }
+        width = parseInt(req.query.width);
+        if (Number.isNaN(width) || width < 1) {
+            return [2 /*return*/, res.send("please enter  positive number for width")];
+        }
+        height = parseInt(req.query.height);
+        if (Number.isNaN(height) || height < 1) {
+            return [2 /*return*/, res.send("please enter positive number for height")];
+        }
+        return [2 /*return*/];
     });
-}
+}); };
 images.get('/', function (req, res) {
-    if (!req.query.filename) {
-        return res.send('Please put the file name');
+    if (req.query.filename) {
+        showImages(req, res);
     }
-    if (!req.query.width || !req.query.height) {
-        showImageWithoutWidthAndHeight(req, res);
-    }
-    else {
-        showImage(req, res);
+    if (req.query.width || req.query.height) {
+        showImageWithWidthAndHeight(req, res);
     }
 });
 exports.default = images;
