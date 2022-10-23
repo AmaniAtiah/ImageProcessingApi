@@ -54,7 +54,6 @@ images.get('/', (req: Request, res: Response):void => {
 
   } 
 
-  res.setHeader('X-Foo', 'bar')
 
 })
 
