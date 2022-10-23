@@ -9,10 +9,10 @@ http://localhost:3000/api/images
 
 
 #### Avaliable images
-encenadaport
-fjord
-icelandwaterfall
-palmtunnel
+encenadaport,
+fjord,
+icelandwaterfall,
+palmtunnel,
 santamonica
 
 
