@@ -15,6 +15,11 @@ const imageFull =   path.resolve('./') + '/assets/full/';
 const processImage = async (req:Request, res: Response
     ) => {
       
+      if(fs.existsSync(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`))) {
+        return res.sendFile(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`));
+  
+      } else {
+
       if(req.query.width && req.query.height) {
       try {
 
@@ -25,14 +30,15 @@ const processImage = async (req:Request, res: Response
      
     } catch (err){
      return`The image cannot be processed ${err}`
-       
+    
       
     }
+  
+    if(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`)) {
 
-    if(fs.existsSync(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`))) {
-      return res.sendFile(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`));
+     return res.sendFile(path.resolve(imageThumb, `${req.query.filename}-${req.query.width}X${req.query.height}.jpg`));
+    }
 
-    } 
 
     
  } else {
@@ -42,6 +48,6 @@ const processImage = async (req:Request, res: Response
 
  }
   }
-
+    }
 
     export default processImage;
